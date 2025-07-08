@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom"
 import Input from "./Input"
 import { email_validation, name_validation, password_validation } from "../utils/inputValidation"
 import { useAuth } from "../context/AuthContext"
+import { loginUser, registerUser } from "../api"
+
 
 
 type Mode = 'login' | 'register'
@@ -25,26 +27,24 @@ function Form({mode}:ModeProps){
     const isLogin = mode === 'login'
     const {login} = useAuth()
 
-    const onSubmit = methods.handleSubmit(data=>{
+    const onSubmit = methods.handleSubmit(async(data)=>{
+       try{
         if(isLogin){
-            console.log('logging in...', data)
-            const stored = localStorage.getItem('user')
-            if(!stored) return alert('User not found!')
-
-            const userStored = JSON.parse(stored)
-            if(userStored.email === data.email && userStored.password === data.password){
-                login(userStored)
-                navigate('/main')
-            }else{
-                alert('Incorrect email or password')
-            }
-            
+            const user = await loginUser(data)
+            console.log(user)
+            login(user)
+            navigate('/main')
         }else{
-            console.log('redirecting to the login', data)
-            localStorage.setItem('user', JSON.stringify(data))
+            await registerUser(data)
+            console.log(data)
             navigate('/')
         }
+
         methods.reset()
+
+       }catch(err){
+        alert(err)   
+       }
     })
 
     return(
