@@ -2,15 +2,18 @@ import { Routes, Route } from "react-router-dom"
 import Login from "../pages/Login"
 import Register from "../pages/Registration"
 import Main from "../pages/Main"
+import Landing from "../pages/LandingPage"
+import ProtectedRoutes from "./ProtectedRoutes"
 
 function AppRoute(){
 
     return(
         <div>
             <Routes>
-                <Route path="/" element={<Login />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/main" element={<Main />} />
+                <Route path="/" element={<Landing />}/>
+                <Route path="/main" element={<ProtectedRoutes><Main /></ProtectedRoutes>} />
             </Routes>
         </div>
     )
