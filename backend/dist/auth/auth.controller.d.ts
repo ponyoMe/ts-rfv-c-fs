@@ -11,8 +11,11 @@ export declare class AuthController {
         email: string;
         password: string;
     }): Promise<{
-        id: number;
-        name: string;
-        email: string;
+        access_token: string;
+        user: {
+            id: number;
+            name: string;
+            email: string;
+        };
     }>;
 }

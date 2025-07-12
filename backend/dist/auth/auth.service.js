@@ -18,10 +18,13 @@ const typeorm_1 = require("@nestjs/typeorm");
 const users_entity_1 = require("./users.entity");
 const typeorm_2 = require("typeorm");
 const bcrypt = require("bcrypt");
+const jwt_1 = require("@nestjs/jwt");
 let AuthService = class AuthService {
     userRepo;
-    constructor(userRepo) {
+    jwtService;
+    constructor(userRepo, jwtService) {
         this.userRepo = userRepo;
+        this.jwtService = jwtService;
     }
     async register(name, email, password) {
         const exists = await this.userRepo.findOneBy({ email });
@@ -38,13 +41,19 @@ let AuthService = class AuthService {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch)
             throw new common_1.BadRequestException('Bad credentials');
-        return { id: user.id, name: user.name, email: user.email };
+        const payload = { sub: user.id, email: user.email };
+        const accessToken = await this.jwtService.signAsync(payload);
+        return {
+            access_token: accessToken,
+            user: { id: user.id, name: user.name, email: user.email }
+        };
     }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(users_entity_1.Users)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

@@ -18,7 +18,7 @@ export const AuthProvider= ({children} : {children : React.ReactNode})=>{
     const isAuthenticated = !!user
 
     return(
-        <AuthContext.Provider value={{user, login,logout, isAuthenticated}} >
+        <AuthContext.Provider value={{user, login, logout, isAuthenticated}} >
             {children}
         </AuthContext.Provider>
     )

@@ -19,6 +19,15 @@ export type User = {
     password: string
 }
 
+export type LoginRes={
+    access_token:string,
+    user:{
+        id:number,
+        name: string,
+        email:string
+    }
+}
+
 function Form({mode}:ModeProps){
 
     const methods = useForm<User>()
@@ -30,14 +39,13 @@ function Form({mode}:ModeProps){
     const onSubmit = methods.handleSubmit(async(data)=>{
        try{
         if(isLogin){
-            const user = await loginUser(data)
-            console.log(user)
-            login(user)
+            const user:LoginRes = await loginUser(data)
+            localStorage.setItem('token', user.access_token)
+            login(user.user)
             navigate('/main')
         }else{
             await registerUser(data)
-            console.log(data)
-            navigate('/')
+            navigate('/login')
         }
 
         methods.reset()

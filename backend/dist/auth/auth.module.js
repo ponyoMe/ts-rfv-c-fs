@@ -12,12 +12,23 @@ const auth_controller_1 = require("./auth.controller");
 const auth_service_1 = require("./auth.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const users_entity_1 = require("./users.entity");
+const jwt_1 = require("@nestjs/jwt");
+const config_1 = require("@nestjs/config");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([users_entity_1.Users])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([users_entity_1.Users]),
+            config_1.ConfigModule,
+            jwt_1.JwtModule.registerAsync({
+                imports: [config_1.ConfigModule],
+                inject: [config_1.ConfigService],
+                useFactory: (config) => ({
+                    secret: config.get('JWT_SECRET'),
+                    signOptions: { expiresIn: '1h' }
+                })
+            })],
         controllers: [auth_controller_1.AuthController],
         providers: [auth_service_1.AuthService]
     })
